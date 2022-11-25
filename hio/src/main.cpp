@@ -18,6 +18,9 @@ float lastPitch; // The last reading of the pitch
 unsigned long previousPitchMillis = 0; 
 const long pitchInterval = 50; // Interval of the reading 
 
+unsigned long previousDistance1Millis = 0;
+long distance1Interval = 200;
+
 void setup() {
   Serial.begin(115200);
   lis.begin(Wire1);
@@ -67,7 +70,11 @@ void loop() {
     // Calculate the averange
     averagePitch = totalPitch / readingNumber;
     // Serial.println(averagePitch,2);
-    // RangeInCentimeters = ultrasonic.MeasureInCentimeters();
     // Serial.println(RangeInCentimeters); 
+  }
+  // *Read the distance value
+  if (currentMillis - previousDistance1Millis >= distance1Interval){
+    previousDistance1Millis = currentMillis;
+    RangeInCentimeters = ultrasonic.MeasureInCentimeters();
   }
 }
