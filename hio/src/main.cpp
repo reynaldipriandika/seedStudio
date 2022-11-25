@@ -70,11 +70,11 @@ void loop() {
     // Calculate the averange
     averagePitch = totalPitch / readingNumber;
     // Serial.println(averagePitch,2);
-    // Serial.println(RangeInCentimeters); 
   }
-  // *Read the distance value
+  // Read the distance value
   if (currentMillis - previousDistance1Millis >= distance1Interval){
     previousDistance1Millis = currentMillis;
     RangeInCentimeters = ultrasonic.MeasureInCentimeters();
+    Serial.println(RangeInCentimeters);
   }
 }
