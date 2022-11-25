@@ -11,8 +11,8 @@ const int readingNumber = 10; // the size of the readings
 
 float pitch[readingNumber]; // analog input
 int pitchIndex = 0; // the index of the current reading 
-float pitchTotal = 0; // the running total
-float pitchAverage = 0; // the average 
+float totalPitch = 0; // the running total
+float averagePitch = 0; // the average 
 float lastPitch; // The last reading of the pitch
 
 unsigned long previousPitchMillis = 0; 
@@ -39,13 +39,13 @@ void setup() {
 void loop() {
   unsigned long currentMillis = millis();
   long RangeInCentimeters;
-  // Read the pitch value
+  // *Read the pitch value
   if (currentMillis - previousPitchMillis >= pitchInterval){
     previousPitchMillis = currentMillis;
     lastPitch = pitch[pitchIndex]; // the last reading value 
     // Serial.print("l:");Serial.print(lastPitch,2);
-    pitchTotal = pitchTotal - lastPitch; // subtract the last reading
-    pitch[pitchIndex] = lis.getAccelerationX(); // get pitch values
+    totalPitch = totalPitch - lastPitch; // subtract the last reading
+    pitch[pitchIndex] = lis.getAccelerationX(); // Get the pitch values
     // Serial.print("p:"); Serial.print(pitch[pitchIndex],2);
     if (lastPitch != pitch[pitchIndex]) { // smoothing the readings
       /*
@@ -55,18 +55,18 @@ void loop() {
       tft.setTextColor(TFT_WHITE, TFT_BLACK);
       // tft.setFreeFont(FF1);
       tft.drawString("x:",60,80,1);
-      tft.drawFloat(pitchAverage,1,70,80,1);
+      tft.drawFloat(averagePitch,1,70,80,1);
       lastPitch = pitch[pitchIndex]; 
     }
-    pitchTotal += pitch[pitchIndex]; // add readings to the total
+    totalPitch += pitch[pitchIndex]; // add readings to the total
     pitchIndex++;
     // if we're at the end of the array
     if (pitchIndex >= readingNumber) {
       pitchIndex = 0; //wrap around to the beginning
     }
     // Calculate the averange
-    pitchAverage = pitchTotal / readingNumber;
-    // Serial.println(pitchAverage,2);
+    averagePitch = totalPitch / readingNumber;
+    // Serial.println(averagePitch,2);
     // RangeInCentimeters = ultrasonic.MeasureInCentimeters();
     // Serial.println(RangeInCentimeters); 
   }
