@@ -1,6 +1,7 @@
 #include "Imu.h"
 
 LIS3DHTR<TwoWire> lis;
+extern TFT_eSPI tft;
 Imu::Imu(){
 }
 
@@ -10,8 +11,11 @@ void Imu::begin(){
       Serial.println("ERROR");
       while(1);
    }
-   lis.setOutputDataRate(LIS3DHTR_DATARATE_25HZ);
-   lis.setFullScaleRange(LIS3DHTR_RANGE_2G);
+   lis.setOutputDataRate(LIS3DHTR_DATARATE_25HZ); // data output rate
+   lis.setFullScaleRange(LIS3DHTR_RANGE_2G); // scale range
+   tft.begin();
+   tft.setRotation(3);
+   tft.fillScreen(TFT_BLACK);
 }
 
 float Imu::pitch(){

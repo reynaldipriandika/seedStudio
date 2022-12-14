@@ -1,8 +1,4 @@
-// #include <Arduino.h>
-// #include <LIS3DHTR.h>
 #include "Imu.h"
-#include <TFT_eSPI.h> 
-#include <Free_Fonts.h> // include the header file 
 #include <Ultrasonic.h>
 
 TFT_eSPI tft;
