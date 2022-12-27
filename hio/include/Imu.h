@@ -9,7 +9,7 @@ extern TFT_eSPI tft;
 class Imu {
    public:
     Imu();
-    void begin();
+    void begin(),displayPitch(int poX,int poY);
     float pitch();
 };
 #endif

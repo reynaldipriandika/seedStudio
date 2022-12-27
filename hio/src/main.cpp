@@ -29,7 +29,8 @@ void loop() {
   unsigned long currentTime = millis();
   if (currentTime - previousPitchTime >= pitchIntervalTime){
     previousPitchTime = currentTime;
-    Serial.println(imu.pitch(),2);
+    // Serial.println(imu.pitch(),2);
+    imu.displayPitch(60,80);
   }
   
   // Read the distance value
@@ -37,7 +38,8 @@ void loop() {
     previousRange1Time = currentTime;
     previousRange1 = rangeInCentimeters;
     rangeInCentimeters = ultrasonic.MeasureInCentimeters();
-    
+    // rangeInCentimeters = imu.pitch();
+
     // Prevent the display of too many values
     if (previousRange1 != rangeInCentimeters) {
       tft.setTextColor(TFT_WHITE, TFT_BLACK);
