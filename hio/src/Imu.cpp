@@ -6,11 +6,11 @@ TFT_eSPI tft;
 // Constant won't change
 const int readingNumber = 10; // The size of the readings
 
-float currentPitch[readingNumber];
-float previousPitch,getPitch;
+float currentPitch[readingNumber],getData[readingNumber];
+float previousPitch,previousData;
 float total = 0; // The running total
 
-int readIndex = 0; // The index of the current reading
+int readIndex = 0, getIndex = 0; // The index of the current reading
 const long intervalTime = 50; // Interval of the reading
 unsigned long previousTime = 0;
 
@@ -29,12 +29,18 @@ void Imu::begin(){
    tft.begin();
    tft.setRotation(3);
    tft.fillScreen(TFT_BLACK);
-   // tft.setTextColor(TFT_WHITE,TFT_BLACK);
+   tft.setTextColor(TFT_WHITE,TFT_BLACK);
 
    // Initialize all the readings to 0
-   for (int i=0; i<readingNumber; i++) {
+   for (int i=0; i<readingNumber; i++){
       currentPitch[i] = 0;
+      getData[i] = 0;
    }
+   /*
+   for(int i=0; i<readingNumber; i++){
+      getData[i] = 0;
+   }
+   */
 }
 
 float Imu::pitch() {
@@ -45,8 +51,9 @@ float Imu::pitch() {
    // Check to see if it's time to read pitch
    // if (currentTime - previousTime >= intervalTime) {
    // previousTime = currentTime;
-   // Save the last time you read the pitch value.
-   // previousPitch = currentPitch[readIndex]; // The last reading value
+
+   // Save the last time you read the pitch value
+   previousPitch = currentPitch[readIndex]; // The last reading value
    total = total - previousPitch; // Subtract the last reading
    currentPitch[readIndex] = lis.getAccelerationX();
 
@@ -63,7 +70,8 @@ float Imu::pitch() {
    readIndex++;
    // If we're at the end of the array
    if (readIndex >= readingNumber) {
-      readIndex = 0; // Wrap around to the beginning
+      // Wrap around to the beginning
+      readIndex = 0; 
    }
    // Smoothing the reading
    average = total/readingNumber;
@@ -72,16 +80,23 @@ float Imu::pitch() {
    // else return 0; // !A bad treatment
 }
 
-void Imu::displayPitch(int poX,int poY){
-   previousPitch = getPitch;
-   getPitch = pitch();
+void Imu::displayImu(const char text[],float data,int poX,int poY){
+   // Save the last time you read the pitch value
+   previousData = getData[getIndex];
+   getData[getIndex] = data;
    
    // Prevent the display too many values
-   if (previousPitch != getPitch){
-      tft.setTextColor(TFT_WHITE,TFT_BLACK);
-      tft.drawString("x:",poX,poY,1);
-      tft.drawFloat(pitch(),2,poX+13,poY,1);
+   if (previousData != getData[getIndex]){
+      tft.drawString(text,poX,poY,1);
+      tft.drawFloat(data,2,poX+20,poY,1);
       
-      previousPitch = getPitch;
+      previousData = getData[getIndex];
+   }
+   
+   getIndex++;
+   // If we're at the end of the array
+   if (getIndex >= readingNumber){
+      // Wrap around to the beginning
+      getIndex = 0;
    }
 }

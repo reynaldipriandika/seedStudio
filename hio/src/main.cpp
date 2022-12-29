@@ -29,8 +29,8 @@ void loop() {
   unsigned long currentTime = millis();
   if (currentTime - previousPitchTime >= pitchIntervalTime){
     previousPitchTime = currentTime;
-    // Serial.println(imu.pitch(),2);
-    imu.displayPitch(60,80);
+    Serial.println(imu.pitch(),2);
+    imu.displayImu("X: ",imu.pitch(),60,80);
   }
   
   // Read the distance value
@@ -43,8 +43,8 @@ void loop() {
     // Prevent the display of too many values
     if (previousRange1 != rangeInCentimeters) {
       tft.setTextColor(TFT_WHITE, TFT_BLACK);
-      tft.drawString("d1:",60,95,1);
-      tft.drawFloat(rangeInCentimeters,1,78,95,1);
+      tft.drawString("D1:",60,90,1);
+      tft.drawFloat(rangeInCentimeters,1,80,90,1);
       
       previousRange1 = rangeInCentimeters;
     }
