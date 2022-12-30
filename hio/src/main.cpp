@@ -24,14 +24,11 @@ void setup() {
   imu.begin();
 }
 
-void loop() {
-
+void loop() 
+{
   unsigned long currentTime = millis();
-  if (currentTime - previousPitchTime >= pitchIntervalTime){
-    previousPitchTime = currentTime;
-    Serial.println(imu.pitch(),2);
-    imu.displayImu("X: ",imu.pitch(),60,80);
-  }
+  
+  imu.displayImu("X :",imu.pitch(),60,80);
   
   // Read the distance value
   if (currentTime - previousRange1Time >= range1IntervalTime){

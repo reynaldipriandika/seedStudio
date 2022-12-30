@@ -12,14 +12,19 @@ float total = 0; // The running total
 
 int readIndex = 0, getIndex = 0; // The index of the current reading
 const long intervalTime = 50; // Interval of the reading
+
 unsigned long previousTime = 0;
 
-Imu::Imu(){
+Imu::Imu()
+{
+   
 }
 
-void Imu::begin(){
+void Imu::begin()
+{
    lis.begin(Wire1);
-   if(!lis){
+   if(!lis)
+   {
       Serial.println("ERROR");
       while(1);
    }
@@ -32,71 +37,75 @@ void Imu::begin(){
    tft.setTextColor(TFT_WHITE,TFT_BLACK);
 
    // Initialize all the readings to 0
-   for (int i=0; i<readingNumber; i++){
+   for (int i=0; i<readingNumber; i++)
+   {
       currentPitch[i] = 0;
       getData[i] = 0;
    }
-   /*
-   for(int i=0; i<readingNumber; i++){
-      getData[i] = 0;
-   }
-   */
 }
 
-float Imu::pitch() {
+float Imu::pitch() 
+{
    // static float pitchAverage;
    static float average;
-   // unsigned long currentTime = millis();
    
-   // Check to see if it's time to read pitch
-   // if (currentTime - previousTime >= intervalTime) {
-   // previousTime = currentTime;
-
    // Save the last time you read the pitch value
    previousPitch = currentPitch[readIndex]; // The last reading value
    total = total - previousPitch; // Subtract the last reading
    currentPitch[readIndex] = lis.getAccelerationX();
 
    /*
-   if (previousPitch != currentPitch[readIndex]) {
+   if (previousPitch != currentPitch[readIndex]) 
+   {
       pitchAverage = average;
       previousPitch = currentPitch[readIndex];
    }
    */
    // !Fail to return values
    // return pitchAverage;
+   // else return 0;
    
    total += currentPitch[readIndex];
    readIndex++;
    // If we're at the end of the array
-   if (readIndex >= readingNumber) {
+   if (readIndex >= readingNumber) 
+   {
       // Wrap around to the beginning
       readIndex = 0; 
    }
    // Smoothing the reading
    average = total/readingNumber;
    return average;
-   // }
-   // else return 0; // !A bad treatment
 }
 
-void Imu::displayImu(const char text[],float data,int poX,int poY){
-   // Save the last time you read the pitch value
-   previousData = getData[getIndex];
-   getData[getIndex] = data;
-   
-   // Prevent the display too many values
-   if (previousData != getData[getIndex]){
-      tft.drawString(text,poX,poY,1);
-      tft.drawFloat(data,2,poX+20,poY,1);
-      
+void Imu::displayImu(const char text[],float data,int poX,int poY)
+{
+   unsigned long currentTime = millis();
+   // Check to see if it's time to read data
+   if (currentTime - previousTime >= intervalTime)
+   {
+      previousTime = currentTime;
+
+      // Save the last time you read the pitch value
       previousData = getData[getIndex];
-   }
-   
-   getIndex++;
-   // If we're at the end of the array
-   if (getIndex >= readingNumber){
-      // Wrap around to the beginning
-      getIndex = 0;
+      getData[getIndex] = data;
+      
+      // Prevent the display too many values
+      if (previousData != getData[getIndex])
+      {
+         tft.drawString(text,poX,poY,1);
+         tft.drawFloat(data,2,poX+20,poY,1);
+         
+         previousData = getData[getIndex];
+      }
+      
+      getIndex++;
+      // If we're at the end of the array
+      if (getIndex >= readingNumber)
+      {
+         // Wrap around to the beginning
+         getIndex = 0;
+      }
+      Serial.println(data,2);
    }
 }
